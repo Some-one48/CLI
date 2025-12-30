@@ -30,15 +30,15 @@ function igual(title, id){
     let verif = title.toLowerCase();
     for(let i = 0; i < listinha.length; i++){
         let titulo = listinha[i].title.toLowerCase();
-        if(id == 0){
+        if(id === 0){
             if(verif === titulo){
             return false;
             }else if (i == listinha.length-1){
                 return true;
             }
         }else{
-            id = id-1;
-            if(i != id){
+            let a = id-1;
+            if(i !== a){
                 if(verif === titulo){
                     return false;
                 }else if (i == listinha.length-1){
@@ -135,7 +135,6 @@ function update(id, newTitle, newBody){
     if(isID(id)){
         let arquivo = file;
         let aux = id-1;
-
         let v = 2;
 
         if(igual(newTitle, id)) {
