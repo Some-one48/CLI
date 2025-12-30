@@ -11,10 +11,16 @@ function verif(){
         if(auxiliar == ''){
             return [JSON.stringify({noteList: []}, null, 2), true];
         }else{
-            return [auxiliar, false];
+            auxiliar = JSON.parse(auxiliar);
+            if (auxiliar.noteList.length == 0){
+                return [JSON.stringify({noteList: []}, null, 2), true];
+            }else {
+                auxiliar = JSON.stringify(auxiliar, null, 2);
+                return [auxiliar, false];
+            }
         }
     }else{
-        return [JSON.stringify({noteList: []}, null, 2), false];
+        return [JSON.stringify({noteList: []}, null, 2), true];
     }
 }
 retorno = verif();
@@ -44,6 +50,8 @@ function igual(title, id){
                 }else if (i == listinha.length-1){
                     return true;
                 }
+            }else if(a == listinha.length-1){
+                return true;
             }
         }
     }
