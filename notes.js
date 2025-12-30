@@ -5,6 +5,17 @@ const { DateTime } = require("luxon");
 // Variáveis Globais
 
 const fileContent = fs.readFileSync('notes.json', 'utf8');
+/*
+function verificacao(){
+    if (fileContent.length < 0){
+        return {
+            noteList: []
+        };
+    }else {
+        return JSON.parse(fileContent);
+    }
+}
+*/
 const file = JSON.parse(fileContent);
 const listinha = file.noteList;
 
@@ -26,6 +37,14 @@ function isID(id){
     if(id <= listinha.length){
         return true;
     }else {
+        return false;
+    }
+}
+
+function isEmpty(str){
+    if(str.length == 0){
+        return true;
+    }else{
         return false;
     }
 }
@@ -75,11 +94,15 @@ function addNote(title, body){
 }
 
 function list(){
-    console.log('Suas Notas:');
-    for(let i = 0; i < listinha.length; i++) {
-        let algo = DateTime.fromISO(listinha[i].createdAt);
-        const formattedDate = `${algo.day}/${algo.month}/${algo.year}`;
-        console.log(`${listinha[i].id}. (Criada em: ${formattedDate}) ${listinha[i].title}`);
+    if(fileContent.length <= 0){
+        console.log('Nenhuma nota encontrada');
+    }else {
+        console.log('Suas Notas:');
+        for(let i = 0; i < listinha.length; i++) {
+            let algo = DateTime.fromISO(listinha[i].createdAt);
+            const formattedDate = `${algo.day}/${algo.month}/${algo.year}`;
+            console.log(`${listinha[i].id}. (Criada em: ${formattedDate}) ${listinha[i].title}`);
+        }
     }
 }
 
@@ -102,14 +125,6 @@ function read(id){
 }
 
 function update(id, newTitle, newBody){
-    function isEmpty(str){
-        if(str.length == 0){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
     if(isID(id)){
         let arquivo = file;
         let aux = id-1;
