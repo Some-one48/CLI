@@ -3,23 +3,12 @@ const { DateTime } = require("luxon");
 
 const fileContent = fs.readFileSync('notes.json', 'utf8');
 const file = JSON.parse(fileContent);
+const listinha = file.noteList;
 
-function newID(){
-    let listinha = file.noteList;
-    let lastID = parseInt(listinha[listinha.length-1].id);
-    return lastID+1;
-}
-
-let arquivo = file;
-
-let note = {
-    id: newID(), 
-    title: "Teste2",
-    body: "teste3",
-    createdAt: DateTime.now()
-};
-
-arquivo.noteList.push(note);
-
-let write = JSON.stringify(arquivo, null, 2);
-fs.writeFileSync('notes.json', write)
+//function list(){
+    console.log('Suas Notas:');
+    for(let i = 0; i < listinha.length; i++) {
+        let algo = DateTime.fromISO(listinha[i].createdAt);
+        const formattedDate = `${algo.day}/${algo.month}/${algo.year}`;
+        console.log(`- (Criada em: ${formattedDate}) ${listinha[i].title}`);
+    }
