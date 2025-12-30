@@ -15,8 +15,7 @@ function verif(){
             if (auxiliar.noteList.length == 0){
                 return [JSON.stringify({noteList: []}, null, 2), true];
             }else {
-                auxiliar = JSON.stringify(auxiliar, null, 2);
-                return [auxiliar, false];
+                return [JSON.stringify(auxiliar, null, 2), false];
             }
         }
     }else{
@@ -34,26 +33,30 @@ const listinha = file.noteList;
 
 function igual(title, id){
     let verif = title.toLowerCase();
-    for(let i = 0; i < listinha.length; i++){
-        let titulo = listinha[i].title.toLowerCase();
-        if(id === 0){
-            if(verif === titulo){
-            return false;
-            }else if (i == listinha.length-1){
-                return true;
-            }
-        }else{
-            let a = id-1;
-            if(i !== a){
+    if (listinha.length > 0){
+        for(let i = 0; i < listinha.length; i++){
+            let titulo = listinha[i].title.toLowerCase();
+            if(id === 0){
                 if(verif === titulo){
-                    return false;
+                return false;
                 }else if (i == listinha.length-1){
                     return true;
                 }
-            }else if(a == listinha.length-1){
-                return true;
+            }else{
+                let a = id-1;
+                if(i !== a){
+                    if(verif === titulo){
+                        return false;
+                    }else if (i == listinha.length-1){
+                        return true;
+                    }
+                }else if(a == listinha.length-1){
+                    return true;
+                }
             }
         }
+    }else {
+        return true;
     }
 }
 
@@ -88,8 +91,12 @@ function write(wfile, msg){
 
 function addNote(title, body){
     function newID(){
-        let lastID = parseInt(listinha[listinha.length-1].id);
-        return lastID+1;
+        if(listinha.length > 0){
+            let lastID = parseInt(listinha[listinha.length-1].id);
+            return lastID+1;
+        }else {
+            return 1;
+        }
     }
     
     if(igual(title, 0)){
