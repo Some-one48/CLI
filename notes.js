@@ -30,6 +30,17 @@ function isID(id){
     }
 }
 
+function write(wfile, msg){
+    let write = JSON.stringify(wfile, null, 2);
+    fsp.writeFile('notes.json', write)
+    .then(() => {
+        console.log(msg);
+    })
+    .catch(error => {
+        console.error('Ocorreu um erro: ', error);
+    });
+}
+
 // Funçoes principais
 
 function addNote(title, body){
@@ -48,14 +59,16 @@ function addNote(title, body){
             createdAt: DateTime.now()
         });
         
-        let write = JSON.stringify(arquivo, null, 2);
+        write(arquivo, `Nota '${title}' adicionada com sucesso!`);
+
+        /*let write = JSON.stringify(arquivo, null, 2);
         fsp.writeFile('notes.json', write)
         .then(() => {
             console.log(`Nota '${title}' adicionada com sucesso!`);
         })
         .catch(error => {
             console.error('Ocorreu um erro: ', error);
-        });
+        });*/
     }else {
         console.error('ERRO: Título já existente');
     }
@@ -116,14 +129,15 @@ function update(id, newTitle, newBody){
                 createdAt: arquivo.noteList[aux].createdAt
             };
 
-            let write = JSON.stringify(arquivo, null, 2);
+            write(arquivo, `Nota de ID ${listinha[aux].id} alterada com sucesso!`);
+            /*let write = JSON.stringify(arquivo, null, 2);
             fsp.writeFile('notes.json', write)
             .then(() => {
                 console.log(`Nota de ID ${listinha[aux].id} alterada com sucesso!`);
             })
             .catch(error => {
                 console.error('Ocorreu um erro: ', error);
-            });
+            });*/
         }else{
             console.error('ERRO: Título existente');
         }
@@ -132,12 +146,29 @@ function update(id, newTitle, newBody){
     }
 }
 
-update(10, 'Teste', 'Texto de teste');
+function remove(id){
+    if(isID(id)){
+        let arquivo = file;
+        let aux = id-1;
+        let title = listinha[aux].title;
+
+        arquivo.noteList.splice(aux, 1);
+        for(let i = 0; i < arquivo.noteList.length; i++){
+            arquivo.noteList[i].id = i+1;
+        }
+
+        write(arquivo, `Nota '${title}' (ID ${id}) foi removida com sucesso!`);
+    }else{
+        console.error('ERRO: ID não encontrado');
+    }
+}
 
 // Exportaçao
 
 module.exports = {
     addNote,
     list,
-    read
+    read,
+    update,
+    remove
 };
