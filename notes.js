@@ -3,32 +3,48 @@ const fsp = require("fs").promises;
 const { DateTime } = require("luxon");
 
 // Variáveis Globais
+let empty = false;
 
-const fileContent = fs.readFileSync('notes.json', 'utf8');
-/*
-function verificacao(){
-    if (fileContent.length < 0){
-        return {
-            noteList: []
-        };
-    }else {
-        return JSON.parse(fileContent);
+function verif(){
+    if(fs.existsSync('notes.json')){
+        let auxiliar = fs.readFileSync('notes.json', 'utf8');
+        if(auxiliar == ''){
+            return [JSON.stringify({noteList: []}, null, 2), true];
+        }else{
+            return [auxiliar, false];
+        }
+    }else{
+        return [JSON.stringify({noteList: []}, null, 2), false];
     }
 }
-*/
+retorno = verif();
+empty = retorno[1];
+
+const fileContent = retorno[0];
 const file = JSON.parse(fileContent);
 const listinha = file.noteList;
 
 // Funções auxiliares
 
-function igual(title){
+function igual(title, id){
     let verif = title.toLowerCase();
     for(let i = 0; i < listinha.length; i++){
         let titulo = listinha[i].title.toLowerCase();
-        if(verif === titulo){
+        if(id == 0){
+            if(verif === titulo){
             return false;
-        }else if (i == listinha.length-1){
-            return true;
+            }else if (i == listinha.length-1){
+                return true;
+            }
+        }else{
+            id = id-1;
+            if(i != id){
+                if(verif === titulo){
+                    return false;
+                }else if (i == listinha.length-1){
+                    return true;
+                }
+            }
         }
     }
 }
@@ -68,7 +84,7 @@ function addNote(title, body){
         return lastID+1;
     }
     
-    if(igual(title)){
+    if(igual(title, 0)){
         let arquivo = file;
         
         arquivo.noteList.push({
@@ -79,22 +95,13 @@ function addNote(title, body){
         });
         
         write(arquivo, `Nota '${title}' adicionada com sucesso!`);
-
-        /*let write = JSON.stringify(arquivo, null, 2);
-        fsp.writeFile('notes.json', write)
-        .then(() => {
-            console.log(`Nota '${title}' adicionada com sucesso!`);
-        })
-        .catch(error => {
-            console.error('Ocorreu um erro: ', error);
-        });*/
     }else {
         console.error('ERRO: Título já existente');
     }
 }
 
 function list(){
-    if(fileContent.length <= 0){
+    if(empty){
         console.log('Nenhuma nota encontrada');
     }else {
         console.log('Suas Notas:');
@@ -129,30 +136,30 @@ function update(id, newTitle, newBody){
         let arquivo = file;
         let aux = id-1;
 
-        if(igual(newTitle)) {
+        let v = 2;
+
+        if(igual(newTitle, id)) {
             if(isEmpty(newTitle)){
                 newTitle = arquivo.noteList[aux].title;
+                v = v-1;
             }
             if(isEmpty(newBody)){
                 newBody = arquivo.noteList[aux].body;
+                v = v-1;
             }
 
-            arquivo.noteList[aux] = {
-                id: arquivo.noteList[aux].id, 
-                title: newTitle,
-                body: newBody,
-                createdAt: arquivo.noteList[aux].createdAt
-            };
+            if(v >= 1){
+                arquivo.noteList[aux] = {
+                    id: arquivo.noteList[aux].id, 
+                    title: newTitle,
+                    body: newBody,
+                    createdAt: arquivo.noteList[aux].createdAt
+                };
 
-            write(arquivo, `Nota de ID ${listinha[aux].id} alterada com sucesso!`);
-            /*let write = JSON.stringify(arquivo, null, 2);
-            fsp.writeFile('notes.json', write)
-            .then(() => {
-                console.log(`Nota de ID ${listinha[aux].id} alterada com sucesso!`);
-            })
-            .catch(error => {
-                console.error('Ocorreu um erro: ', error);
-            });*/
+                write(arquivo, `Nota de ID ${listinha[aux].id} alterada com sucesso!`);
+            }else {
+                console.error('ERRO: Você deve alterar pelo menos uma (1) instância para atualizar uma nota');
+            }
         }else{
             console.error('ERRO: Título existente');
         }
@@ -179,7 +186,6 @@ function remove(id){
 }
 
 // Exportaçao
-
 module.exports = {
     addNote,
     list,
