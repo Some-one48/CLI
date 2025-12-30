@@ -137,30 +137,30 @@ function update(id, newTitle, newBody){
         let aux = id-1;
         let v = 2;
 
-        if(igual(newTitle, id)) {
-            if(isEmpty(newTitle)){
-                newTitle = arquivo.noteList[aux].title;
-                v = v-1;
-            }
-            if(isEmpty(newBody)){
-                newBody = arquivo.noteList[aux].body;
-                v = v-1;
-            }
+        if(isEmpty(newTitle)){
+            newTitle = arquivo.noteList[aux].title;
+            v = v-1;
+        }
+        if(isEmpty(newBody)){
+            newBody = arquivo.noteList[aux].body;
+            v = v-1;
+        }
 
-            if(v >= 1){
-                arquivo.noteList[aux] = {
-                    id: arquivo.noteList[aux].id, 
-                    title: newTitle,
-                    body: newBody,
-                    createdAt: arquivo.noteList[aux].createdAt
-                };
+        if(v >= 1){
+            arquivo.noteList[aux] = {
+                id: arquivo.noteList[aux].id, 
+                title: newTitle,
+                body: newBody,
+                createdAt: arquivo.noteList[aux].createdAt
+            };
 
+            if(igual(arquivo.noteList[aux].title, id)) {
                 write(arquivo, `Nota de ID ${listinha[aux].id} alterada com sucesso!`);
-            }else {
-                console.error('ERRO: Você deve alterar pelo menos uma (1) instância para atualizar uma nota');
+            }else{
+                console.error('ERRO: Título existente');
             }
-        }else{
-            console.error('ERRO: Título existente');
+        }else {
+            console.error('ERRO: Você deve alterar pelo menos uma (1) instância para atualizar uma nota');
         }
     }else{
         console.error('ERRO: ID não encontrado');

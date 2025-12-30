@@ -23,8 +23,15 @@ if (argv._ == 'add'){
 }else if(argv._ == 'update'){
     if(argv.id){
         let id = argv.id;
-        let newtitle = argv.newTitle;
-        let newbody = argv.newBody;
+        let newtitle = '';
+        let newbody = '';
+
+        if(argv.newTitle){
+            newtitle = argv.newTitle;
+        }
+        if(argv.newBody){
+           newbody = argv.newBody; 
+        }
         notes.update(id, newtitle, newbody);
     }else {
         console.error('ERRO: O campo do id é obrigatório');
